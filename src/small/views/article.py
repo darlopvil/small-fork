@@ -23,14 +23,16 @@ def article(article_url):
         for paragraph in page.content:
             for child in paragraph.children:
                 if child.__class__.__name__ == "GithubGist":
-                    gist_id = child.id
-                    gist = GithubClient.get_gist(gist_id)
-                    child.content = gist
+                    try:
+                        gist = GithubClient.get_gist(child.id)
+                        child.content = gist
+                    except Exception as e:
+                        print(f"Error fetching gist: {str(e)}")
 
         return render_template("article.html", page=page)
     except Exception as e:
         if isinstance(e, NotFound):
             raise
-        
+
         print(f"Error fetching article: {str(e)}")
         abort(500)
