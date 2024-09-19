@@ -7,6 +7,8 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 - Clean, minimalist interface for reading Medium articles
 - Fetches article content directly from Medium's GraphQL API
 - Parses and displays article content, including text and basic formatting
+- Proxies embedded images and GitHub gists
+- Prevents loading iframes without user consent
 - Responsive design for comfortable reading on various devices
 
 ## Installation
