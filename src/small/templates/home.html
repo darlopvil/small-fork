@@ -8,7 +8,7 @@
     <h2>Example:</h2>
     <p>
         <strong>Original:</strong> https://medium.com/@username/article-title-123abc<br>
-        <strong>Small:</strong> https://{{ url_for("home.home", _external=True) }}@username/article-title-123abc
+        <strong>Small:</strong> {{ url_for("home.home", _external=True) }}@username/article-title-123abc
     </p>
 </div>
 {% endblock %}
