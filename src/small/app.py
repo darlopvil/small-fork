@@ -2,13 +2,11 @@ from flask import Flask
 
 from os import environ
 
-from .const import Config
 from .views import home, article, error, proxy
 
 
-def create_app(config_class=Config):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_class)
 
     app.register_blueprint(home.bp)
     app.register_blueprint(article.bp)
