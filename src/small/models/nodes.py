@@ -5,6 +5,7 @@ from typing import List, Union
 @dataclass
 class Text:
     content: str
+    type: str
 
 
 @dataclass

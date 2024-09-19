@@ -72,6 +72,13 @@ article img {
     margin: 20px 0;
 }
 
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-left: 3px solid #1a73e8;
+    overflow-x: auto;
+}
+
 /* Error Page Styles */
 .error-container {
     text-align: center;

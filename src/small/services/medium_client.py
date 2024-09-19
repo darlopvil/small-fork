@@ -58,7 +58,7 @@ class MediumClient:
                     )
                 ]
             else:
-                children = [Text(content=p["text"])]
+                children = [Text(content=p["text"].strip(), type=p["type"])]
             paragraphs.append(Paragraph(children=children))
 
         return Page(

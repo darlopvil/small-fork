@@ -7,15 +7,17 @@
 <p>By {{ page.author }} on {{ page.created_at }}</p>
 <article>
     {% for paragraph in page.content %}
-        <p>
         {% for child in paragraph.children %}
             {% if child.__class__.__name__ == 'Text' %}
+            <{{ child.type | lower }}>
                 {{ child.content }}
+            </{{ child.type | lower }}>
             {% elif child.__class__.__name__ == 'Image' %}
+            <p>
                 <img src="{{ child.src }}" alt="{{ child.alt }}" width="{{ child.width }}" height="{{ child.height }}">
+            </p>
             {% endif %}
         {% endfor %}
-        </p>
     {% endfor %}
 </article>
 {% endblock %}
