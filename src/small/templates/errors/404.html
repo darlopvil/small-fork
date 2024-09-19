@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}404 Not Found - Small{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <h1>404 Not Found</h1>
+    <p>Sorry, the page you are looking for could not be found.</p>
+    <p>This could be because:</p>
+    <ul>
+        <li>The URL you entered is incorrect or outdated.</li>
+        <li>The article you're trying to access no longer exists on Medium.</li>
+        <li>You are trying to access something that is not an article. Small currently only supports Medium articles, no user profiles or other pages.</li>
+        <li>There was an error parsing the Medium URL.</li>
+    </ul>
+    <p>You can try:</p>
+    <ul>
+        <li>Double-checking the URL for any typos.</li>
+        <li>Going back to <a href="{{ url_for('home.home') }}">our homepage</a> and starting over.</li>
+        <li>Searching for the article directly on Medium.</li>
+    </ul>
+</div>
+{% endblock %}
