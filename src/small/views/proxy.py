@@ -1,4 +1,4 @@
-from flask import Blueprint, abort
+from flask import Blueprint, abort, render_template, request
 
 from requests import get
 
@@ -13,3 +13,8 @@ def image(original_width, id):
     except Exception as e:
         print(f"Error fetching image: {str(e)}")
         abort(500)
+
+
+@bp.route("/iframe/")
+def iframe():
+    return render_template("iframe.html", url=request.args.get("url"))

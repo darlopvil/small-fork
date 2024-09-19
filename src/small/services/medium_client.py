@@ -4,6 +4,7 @@ from flask import url_for
 
 from small.models.nodes import Page, Paragraph, Text, Image, IFrame, GithubGist
 
+from urllib.parse import quote
 from datetime import datetime
 
 
@@ -74,9 +75,12 @@ class MediumClient:
                     gist_id = iframe["href"].split("/")[-1]
                     children = [GithubGist(id=gist_id)]
                 else:
+                    src = quote(iframe["iframeSrc"] or iframe["href"], safe="")
+                    url = url_for("proxy.iframe") + f"?url={src}"
+
                     children = [
                         IFrame(
-                            src=iframe["iframeSrc"] or iframe["href"],
+                            src=url,
                             width=iframe["iframeWidth"],
                             height=iframe["iframeHeight"],
                         )

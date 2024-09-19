@@ -18,6 +18,24 @@ a:hover {
     text-decoration: underline;
 }
 
+a .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1a73e8;
+    color: #fff;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+a .btn:hover {
+    background-color: #0d6efd;
+}
+
+a .btn:active {
+    background-color: #0b5ed7;
+}
+
 /* Header Styles */
 header {
     border-bottom: 1px solid #e0e0e0;
