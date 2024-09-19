@@ -2,7 +2,7 @@ import requests
 
 from flask import url_for
 
-from small.models.nodes import Page, Paragraph, Text, Image
+from small.models.nodes import Page, Paragraph, Text, Image, IFrame, GithubGist
 
 from datetime import datetime
 
@@ -30,6 +30,14 @@ class MediumClient:
                     originalWidth
                     originalHeight
                   }
+                  iframe {
+                    mediaResource {
+                      href
+                      iframeSrc
+                      iframeWidth
+                      iframeHeight
+                    }
+                  }
                 }
               }
             }
@@ -41,6 +49,9 @@ class MediumClient:
 
         response = requests.post(url, json={"query": query})
         data = response.json()["data"]["post"]
+
+        if not data:
+            return None
 
         paragraphs = []
         for p in data["content"]["bodyModel"]["paragraphs"]:
@@ -57,8 +68,21 @@ class MediumClient:
                         height=p["metadata"]["originalHeight"],
                     )
                 ]
+            elif p["type"] == "IFRAME":
+                iframe = p["iframe"]["mediaResource"]
+                if "gist.github.com" in iframe["href"]:
+                    gist_id = iframe["href"].split("/")[-1]
+                    children = [GithubGist(id=gist_id)]
+                else:
+                    children = [
+                        IFrame(
+                            src=iframe["iframeSrc"] or iframe["href"],
+                            width=iframe["iframeWidth"],
+                            height=iframe["iframeHeight"],
+                        )
+                    ]
             else:
-                children = [Text(content=p["text"].strip(), type=p["type"])]
+                children = [Text(content=p["text"], type=p["type"])]
             paragraphs.append(Paragraph(children=children))
 
         return Page(

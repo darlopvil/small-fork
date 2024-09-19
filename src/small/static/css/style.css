@@ -72,11 +72,39 @@ article img {
     margin: 20px 0;
 }
 
+/* Code Block Styles */
 pre {
     background-color: #f4f4f4;
-    padding: 10px;
-    border-left: 3px solid #1a73e8;
-    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-left: 3px solid #f36d33;
+    color: #666;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
+}
+
+/* IFrame Styles */
+iframe {
+    max-width: 100%;
+    border: none;
+    margin: 20px 0;
+}
+
+/* GitHub Gist Styles */
+.gist {
+    margin: 20px 0;
+}
+
+.gist h4 {
+    margin-bottom: 10px;
+    color: #333;
 }
 
 /* Error Page Styles */

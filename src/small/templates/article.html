@@ -14,6 +14,18 @@
             <p>
                 <img src="{{ child.src }}" alt="{{ child.alt }}" width="{{ child.width }}" height="{{ child.height }}">
             </p>
+            {% elif child.__class__.__name__ == 'IFrame' %}
+                <iframe src="{{ child.src }}" width="{{ child.width }}" height="{{ child.height }}" frameborder="0" allowfullscreen></iframe>
+            {% elif child.__class__.__name__ == 'GithubGist' %}
+                {% if child.content %}
+                    {% for filename, content in child.content.items() %}
+                        <h4>{{ filename }}</h4>
+                        <pre><code>{{ content }}</code></pre>
+                    {% endfor %}
+                    <a href="{{ child.url }}">View Gist on GitHub</a>
+                {% else %}
+                    <p>Failed to load GitHub Gist</p>
+                {% endif %}
             {% endif %}
         {% endfor %}
     {% endfor %}

@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, abort
+from werkzeug.exceptions import NotFound
 
 from small.services.medium_client import MediumClient
+from small.services.github_client import GithubClient
 from small.utils.parse_article_id import parse_article_id
 
 bp = Blueprint("articles", __name__)
@@ -14,7 +16,21 @@ def article(article_url):
 
     try:
         page = MediumClient.get_post(article_id)
+
+        if not page:
+            abort(404)
+
+        for paragraph in page.content:
+            for child in paragraph.children:
+                if child.__class__.__name__ == "GithubGist":
+                    gist_id = child.id
+                    gist = GithubClient.get_gist(gist_id)
+                    child.content = gist
+
         return render_template("article.html", page=page)
     except Exception as e:
+        if isinstance(e, NotFound):
+            raise
+        
         print(f"Error fetching article: {str(e)}")
         abort(500)

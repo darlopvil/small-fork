@@ -17,8 +17,22 @@ class Image:
 
 
 @dataclass
+class IFrame:
+    src: str
+    width: int
+    height: int
+
+
+@dataclass
+class GithubGist:
+    id: str
+    filename: str = None
+    content: str = None
+
+
+@dataclass
 class Paragraph:
-    children: List[Union[Text, Image]]
+    children: List[Union[Text, Image, IFrame, GithubGist]]
 
 
 @dataclass
