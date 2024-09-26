@@ -1,4 +1,5 @@
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from os import environ
 
@@ -14,6 +15,13 @@ app.register_blueprint(proxy.bp)
 
 def main():
     port = int(environ.get("PORT", 8115))
+
+    if int(environ.get("DEBUG", 0)):
+        app.debug = True
+
+    if int(environ.get("PROXY_FIX", 0)):
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
     app.run(port=port)
 
 

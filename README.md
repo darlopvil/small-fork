@@ -32,6 +32,8 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 
 ## Usage
 
+### Local / Development
+
 1. Start the Flask development server:
    ```
    small
@@ -45,6 +47,72 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
    - Original URL: `https://medium.com/@username/article-title-123abc`
    - Small URL: `http://localhost:5000/@username/article-title-123abc`
 
+### Production
+
+For production use, it is recommended to deploy Small using a WSGI server like uWSGI, and behind a reverse proxy like Caddy.
+
+This is a basic guide to deploy Small using uWSGI and Caddy.
+
+1. Clone the repository:
+   ```
+   git clone https://git.private.coffee/PrivateCoffee/small.git
+   cd small
+   ```
+
+2. Create a virtual environment and activate it:
+   ```
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+3. Install the package:
+   ```
+   pip install .
+   ```
+
+4. Install uWSGI:
+   ```
+   pip install uwsgi
+   ```
+
+5. Create a `small.ini` file with the following content (adjust as needed):
+   ```
+   [uwsgi]
+   module = small.app:app
+
+   uid = small
+   gid = small
+   master = true
+   processes = 5
+
+   plugins = python3
+   virtualenv = /srv/small/venv/
+   chdir = /srv/small/
+
+   http-socket = /tmp/small.sock
+   chown-socket = caddy
+   ```
+
+6. Start the uWSGI server (consider using a process manager like `systemd`):
+   ```
+   uwsgi --ini small.ini
+   ```
+
+7. Configure Caddy to reverse proxy requests to the uWSGI server:
+   ```
+   small.example.com {
+       reverse_proxy unix//tmp/small.sock
+   }
+   ```
+
+#### Proxy Fix
+
+If you are using a reverse proxy like Nginx, and it is setting the `X-Forwarded-Host` header instead of passing the `Host` header, you can use the `ProxyFix` middleware to fix the issue. To enable it, simply set the `PROXY_FIX` environment variable to `1`.
+
+For uWSGI, you can add the following line to the `small.ini` file:
+```
+env = PROXY_FIX=1
+```
 
 ## Contributing
 
