@@ -107,7 +107,7 @@ This is a basic guide to deploy Small using uWSGI and Caddy.
 
 #### Proxy Fix
 
-If you are using a reverse proxy like Nginx, and it is setting the `X-Forwarded-Host` header instead of passing the `Host` header, you can use the `ProxyFix` middleware to fix the issue. To enable it, simply set the `PROXY_FIX` environment variable to `1`.
+If you are using a reverse proxy like Nginx, and it is setting the `X-Forwarded-Host` header instead of passing the `Host` header (you will notice this if the URL displayed on the landing page shows the internal IP and port instead of the domain name), you can use the `ProxyFix` middleware to fix the issue. To enable it, simply set the `PROXY_FIX` environment variable to `1`.
 
 For uWSGI, you can add the following line to the `small.ini` file:
 ```
