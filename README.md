@@ -85,7 +85,6 @@ This is a basic guide to deploy Small using uWSGI and Caddy.
    master = true
    processes = 5
 
-   plugins = python3
    virtualenv = /srv/small/venv/
    chdir = /srv/small/
 
