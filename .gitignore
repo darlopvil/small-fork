@@ -1,5 +1,7 @@
-venv/
-.venv/
-__pycache__/
-*.pyc
 /dist/
+docker-compose.yml
+.env
+*.pyc
+__pycache__/
+.venv/
+venv/
