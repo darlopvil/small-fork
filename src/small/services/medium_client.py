@@ -26,6 +26,15 @@ class MediumClient:
                 paragraphs {
                   type
                   text
+                  markups {
+                    title
+                    type
+                    href
+                    userId
+                    start
+                    end
+                    anchorType
+                  }
                   metadata {
                     id
                     originalWidth
@@ -86,7 +95,7 @@ class MediumClient:
                         )
                     ]
             else:
-                children = [Text(content=p["text"], type=p["type"])]
+                children = [Text(content=p["text"], type=p["type"], markups=p["markups"])]
             paragraphs.append(Paragraph(children=children))
 
         return Page(

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, url_for
 from werkzeug.exceptions import NotFound
 
 from small.services.medium_client import MediumClient
@@ -20,6 +20,8 @@ def article(article_url):
         if not page:
             abort(404)
 
+        list_nest = []
+
         for paragraph in page.content:
             for child in paragraph.children:
                 if child.__class__.__name__ == "GithubGist":
@@ -28,6 +30,58 @@ def article(article_url):
                         child.content = gist
                     except Exception as e:
                         print(f"Error fetching gist: {str(e)}")
+
+                elif child.__class__.__name__ == "Text":
+                    child.type = child.type.lower()
+
+                    if child.type == "oli":
+                        if not list_nest or not list_nest[-1] == "oli":
+                            list_nest.append("oli")
+                            child.prepend = "<ol>"
+                        
+                        child.type = "li"
+                            
+                    elif child.type == "uli":
+                        if not list_nest or not list_nest[-1] == "uli":
+                            list_nest.append("uli")
+                            child.prepend = "<ul>"
+                        
+                        child.type = "li"
+
+                    else:
+                        while list_nest:
+                            if list_nest[-1] == "oli":
+                                child.prepend += "</ol>"
+                            elif list_nest[-1] == "uli":
+                                child.prepend += "</ul>"
+                        
+                            list_nest.pop()
+
+                    # Handle other markups
+                    child.markups = sorted(
+                        child.markups, key=lambda x: x["start"], reverse=True
+                    )
+
+                    for markup in child.markups:
+                        start_markup = f'<{markup["type"].lower()} {" ".join([f"{k}=\"{v}\"" for k, v in markup.items() if v and k != "type"])}>'
+                        end_markup = f"</{markup['type'].lower()}>"
+
+                        child.content = (
+                            child.content[: markup["start"]]
+                            + start_markup
+                            + child.content[markup["start"] : markup["end"]]
+                            + end_markup
+                            + child.content[markup["end"] :]
+                        )
+
+        # Close any open lists
+        while list_nest:
+            if list_nest[-1] == "oli":
+                page.content[-1].children[-1].append += "</ol>"
+            elif list_nest[-1] == "uli":
+                page.content[-1].children[-1].append += "</ul>"
+
+            list_nest.pop()
 
         return render_template("article.html", page=page)
     except Exception as e:

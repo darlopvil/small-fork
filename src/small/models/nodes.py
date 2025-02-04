@@ -6,6 +6,9 @@ from typing import List, Union
 class Text:
     content: str
     type: str
+    markups: List[dict]
+    prepend: str = ""
+    append: str = ""
 
 
 @dataclass
