@@ -38,14 +38,14 @@ def article(article_url):
                         if not list_nest or not list_nest[-1] == "oli":
                             list_nest.append("oli")
                             child.prepend = "<ol>"
-                        
+
                         child.type = "li"
-                            
+
                     elif child.type == "uli":
                         if not list_nest or not list_nest[-1] == "uli":
                             list_nest.append("uli")
                             child.prepend = "<ul>"
-                        
+
                         child.type = "li"
 
                     else:
@@ -54,7 +54,7 @@ def article(article_url):
                                 child.prepend += "</ol>"
                             elif list_nest[-1] == "uli":
                                 child.prepend += "</ul>"
-                        
+
                             list_nest.pop()
 
                     # Handle other markups
@@ -63,7 +63,7 @@ def article(article_url):
                     )
 
                     for markup in child.markups:
-                        start_markup = f'<{markup["type"].lower()} {" ".join([f"{k}=\"{v}\"" for k, v in markup.items() if v and k != "type"])}>'
+                        start_markup = f"""<{markup["type"].lower()} {" ".join([f"{k}='{v}'" for k, v in markup.items() if v and k != "type"])}>"""
                         end_markup = f"</{markup['type'].lower()}>"
 
                         child.content = (
