@@ -1,5 +1,10 @@
 # Small
 
+[![Support Private.coffee!](https://shields.private.coffee/badge/private.coffee-support%20us!-pink?logo=coffeescript)](https://private.coffee)
+[![Matrix](https://shields.private.coffee/badge/Matrix-join%20us!-blue?logo=matrix)](https://matrix.pcof.fi/#/#small:private.coffee)
+[![Latest Git Commit](https://shields.private.coffee/gitea/last-commit/privatecoffee/small?gitea_url=https://git.private.coffee)](https://git.private.coffee/privatecoffee/small)
+
+
 Small is an alternative frontend for Medium articles, built with Flask. It allows users to read Medium articles without the clutter and distractions of the original Medium interface.
 
 ## Features
