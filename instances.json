@@ -1,0 +1,23 @@
+[
+    {
+        "name": "small.private.coffee",
+        "url": "https://small.private.coffee",
+        "type": "clearnet",
+        "provider": {
+            "name": "Private.coffee",
+            "url": "https://private.coffee"
+        },
+        "location": "AT",
+        "notes": "Main instance"
+    },
+    {
+        "name": "small.bloat.cat",
+        "url": "https://small.bloat.cat",
+        "type": "clearnet",
+        "provider": {
+            "name": "Bloat.cat",
+            "url": "https://bloat.cat"
+        },
+        "location": "DE"
+    }
+]

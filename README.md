@@ -4,8 +4,14 @@
 [![Matrix](https://shields.private.coffee/badge/Matrix-join%20us!-blue?logo=matrix)](https://matrix.pcof.fi/#/#small:private.coffee)
 [![Latest Git Commit](https://shields.private.coffee/gitea/last-commit/privatecoffee/small?gitea_url=https://git.private.coffee)](https://git.private.coffee/privatecoffee/small)
 
-
 Small is an alternative frontend for Medium articles, built with Flask. It allows users to read Medium articles without the clutter and distractions of the original Medium interface.
+
+## Instances
+
+| URL                                                  | Provided by                              | Country | Notes         |
+| ---------------------------------------------------- | ---------------------------------------- | ------- | ------------- |
+| [small.private.coffee](https://small.private.coffee) | [Private.coffee](https://private.coffee) | Austria | Main instance |
+| [small.bloat.cat](https://small.bloat.cat)           | [Bloat.cat](https://bloat.cat)           | Germany |               |
 
 ## Features
 
@@ -19,12 +25,14 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 ## Installation
 
 1. Clone the repository:
+
    ```
    git clone https://git.private.coffee/PrivateCoffee/small.git
    cd small
    ```
 
 2. Create a virtual environment and activate it:
+
    ```
    python -m venv venv
    source venv/bin/activate
@@ -40,6 +48,7 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 ### Local / Development
 
 1. Start the Flask development server:
+
    ```
    small
    ```
@@ -49,6 +58,7 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 3. To read a Medium article, replace `https://medium.com` in the article's URL with `http://localhost:5000`
 
    For example:
+
    - Original URL: `https://medium.com/@username/article-title-123abc`
    - Small URL: `http://localhost:5000/@username/article-title-123abc`
 
@@ -59,28 +69,33 @@ For production use, it is recommended to deploy Small using a WSGI server like u
 This is a basic guide to deploy Small using uWSGI and Caddy.
 
 1. Clone the repository:
+
    ```
    git clone https://git.private.coffee/PrivateCoffee/small.git
    cd small
    ```
 
 2. Create a virtual environment and activate it:
+
    ```
    python -m venv venv
    source venv/bin/activate
    ```
 
 3. Install the package:
+
    ```
    pip install .
    ```
 
 4. Install uWSGI:
+
    ```
    pip install uwsgi
    ```
 
 5. Create a `small.ini` file with the following content (adjust as needed):
+
    ```
    [uwsgi]
    module = small.app:app
@@ -98,6 +113,7 @@ This is a basic guide to deploy Small using uWSGI and Caddy.
    ```
 
 6. Start the uWSGI server (consider using a process manager like `systemd`):
+
    ```
    uwsgi --ini small.ini
    ```
@@ -114,6 +130,7 @@ This is a basic guide to deploy Small using uWSGI and Caddy.
 If you are using a reverse proxy like Nginx, and it is setting the `X-Forwarded-Host` header instead of passing the `Host` header (you will notice this if the URL displayed on the landing page shows the internal IP and port instead of the domain name), you can use the `ProxyFix` middleware to fix the issue. To enable it, simply set the `PROXY_FIX` environment variable to `1`.
 
 For uWSGI, you can add the following line to the `small.ini` file:
+
 ```
 env = PROXY_FIX=1
 ```
