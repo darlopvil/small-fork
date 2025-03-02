@@ -8,10 +8,12 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 
 ## Instances
 
-| URL                                                  | Provided by                              | Country | Notes         |
-| ---------------------------------------------------- | ---------------------------------------- | ------- | ------------- |
-| [small.private.coffee](https://small.private.coffee) | [Private.coffee](https://private.coffee) | Austria | Main instance |
-| [small.bloat.cat](https://small.bloat.cat)           | [Bloat.cat](https://bloat.cat)           | Germany |               |
+<!-- START_INSTANCE_LIST -->
+| URL                                                  | Provided by                              | Country       | Notes         |
+| ---------------------------------------------------- | ---------------------------------------- | ------------- | ------------- |
+| [small.private.coffee](https://small.private.coffee) | [Private.coffee](https://private.coffee) | Austria 🇦🇹 🇪🇺 | Main instance |
+| [small.bloat.cat](https://small.bloat.cat)           | [Bloat.cat](https://bloat.cat)           | Germany 🇩🇪 🇪🇺 |               |
+<!-- END_INSTANCE_LIST -->
 
 ## Features
 
