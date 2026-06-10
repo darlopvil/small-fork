@@ -1,0 +1,30 @@
+FROM docker.io/library/python:3.13-slim
+
+ENV APP_ENV=/opt/venv
+ENV PATH="${APP_ENV}/bin:$PATH"
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PORT=8002
+
+WORKDIR /app
+
+COPY . /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        uwsgi \
+        uwsgi-plugin-python3 && \
+    python -m venv "${APP_ENV}" && \
+    pip install --upgrade pip && \
+    pip install . && \
+    chmod +x /app/contrib/podman/entrypoint.sh && \
+    useradd --system --no-create-home --shell /usr/sbin/nologin small && \
+    rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8002
+
+USER small:small
+
+ENTRYPOINT ["/app/contrib/podman/entrypoint.sh"]

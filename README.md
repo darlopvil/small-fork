@@ -68,7 +68,17 @@ Small is an alternative frontend for Medium articles, built with Flask. It allow
 
 For production use, it is recommended to deploy Small using a WSGI server like uWSGI, and behind a reverse proxy like Caddy.
 
-This is a basic guide to deploy Small using uWSGI and Caddy.
+#### Podman / Container
+
+Small provides a container image at `git.private.coffee/privatecoffee/small:latest`.
+
+```
+podman run --rm -p 8002:8002 -e PORT=8002 git.private.coffee/privatecoffee/small:latest
+```
+
+#### Manual Deployment
+
+This is a basic guide to deploy Small using uWSGI and Caddy. Adjust the steps as needed for your specific environment and requirements.
 
 1. Clone the repository:
 
