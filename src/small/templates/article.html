@@ -9,7 +9,7 @@
     {% for paragraph in page.content %}
         {% for child in paragraph.children %}
             {% if child.__class__.__name__ == 'Text' %}
-            {{ child.prepend | safe }}<{{ child.type | lower }}>{{ child.content | safe }}</{{ child.type | lower }}>{{ child.append | safe }}
+            {{ child.prepend | safe }}<{{ child.tag }}>{{ child.content | safe }}</{{ child.tag }}>{{ child.append | safe }}
             {% elif child.__class__.__name__ == 'Image' %}
             <p>
                 <img src="{{ child.src }}" alt="{{ child.alt }}" width="{{ child.width }}" height="{{ child.height }}">

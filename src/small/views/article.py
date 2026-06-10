@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, abort, url_for
+from flask import Blueprint, render_template, abort
 from werkzeug.exceptions import NotFound
+
+from html import escape
 
 from small.services.medium_client import MediumClient
 from small.services.github_client import GithubClient
@@ -32,53 +34,57 @@ def article(article_url):
                         print(f"Error fetching gist: {str(e)}")
 
                 elif child.__class__.__name__ == "Text":
-                    child.type = child.type.lower()
+                    child.type = child.type.upper()
 
-                    if child.type == "oli":
-                        if not list_nest or not list_nest[-1] == "oli":
-                            list_nest.append("oli")
+                    if child.type == "OLI":
+                        if not list_nest or not list_nest[-1] == "OLI":
+                            list_nest.append("OLI")
                             child.prepend = "<ol>"
 
-                        child.type = "li"
+                        child.tag = "li"
 
-                    elif child.type == "uli":
-                        if not list_nest or not list_nest[-1] == "uli":
-                            list_nest.append("uli")
+                    elif child.type == "ULI":
+                        if not list_nest or not list_nest[-1] == "ULI":
+                            list_nest.append("ULI")
                             child.prepend = "<ul>"
 
-                        child.type = "li"
+                        child.tag = "li"
 
                     else:
                         while list_nest:
-                            if list_nest[-1] == "oli":
+                            if list_nest[-1] == "OLI":
                                 child.prepend += "</ol>"
-                            elif list_nest[-1] == "uli":
+                            elif list_nest[-1] == "ULI":
                                 child.prepend += "</ul>"
 
                             list_nest.pop()
 
-                    # Handle other markups
-                    child.markups = sorted(
-                        child.markups, key=lambda x: x["start"], reverse=True
-                    )
-
-                    for markup in child.markups:
-                        start_markup = f"""<{markup["type"].lower()} {" ".join([f"{k}='{v}'" for k, v in markup.items() if v and k != "type"])}>"""
-                        end_markup = f"</{markup['type'].lower()}>"
-
-                        child.content = (
-                            child.content[: markup["start"]]
-                            + start_markup
-                            + child.content[markup["start"] : markup["end"]]
-                            + end_markup
-                            + child.content[markup["end"] :]
+                    if child.tag == "pre":
+                        child.prepend += "<code>"
+                        child.append = "</code>" + child.append
+                        child.content = escape(child.content)
+                    else:
+                        child.markups = sorted(
+                            child.markups, key=lambda x: x["start"], reverse=True
                         )
+
+                        for markup in child.markups:
+                            start_markup = f"""<{markup["type"].lower()} {" ".join([f"{k}='{v}'" for k, v in markup.items() if v and k != "type"])}>"""
+                            end_markup = f"</{markup['type'].lower()}>"
+
+                            child.content = (
+                                child.content[: markup["start"]]
+                                + start_markup
+                                + child.content[markup["start"] : markup["end"]]
+                                + end_markup
+                                + child.content[markup["end"] :]
+                            )
 
         # Close any open lists
         while list_nest:
-            if list_nest[-1] == "oli":
+            if list_nest[-1] == "OLI":
                 page.content[-1].children[-1].append += "</ol>"
-            elif list_nest[-1] == "uli":
+            elif list_nest[-1] == "ULI":
                 page.content[-1].children[-1].append += "</ul>"
 
             list_nest.pop()

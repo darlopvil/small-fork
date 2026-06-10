@@ -7,6 +7,7 @@ class Text:
     content: str
     type: str
     markups: List[dict]
+    tag: str = "p"
     prepend: str = ""
     append: str = ""
 
