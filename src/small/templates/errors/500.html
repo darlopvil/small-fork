@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}500 Internal Server Error - Small{% endblock %}
+{% block title %}500 Error interno del servidor - Small{% endblock %}
 
 {% block content %}
 <div class="error-container">
-    <h1>500 Internal Server Error</h1>
-    <p>We're sorry, but something went wrong on our end.</p>
-    <p>This could be because:</p>
+    <h1>500 Error interno del servidor</h1>
+    <p>Algo ha fallado por nuestra parte.</p>
+    <p>Puede deberse a:</p>
     <ul>
-        <li>There was an issue connecting to Medium's servers.</li>
-        <li>Medium's API structure has changed, and we haven't updated yet.</li>
-        <li>There's a bug in our application.</li>
+        <li>Un problema de conexión con los servidores de Medium.</li>
+        <li>Un cambio en la API de Medium que aún no hemos incorporado.</li>
+        <li>Un fallo en la aplicación.</li>
     </ul>
-    <p>You can try:</p>
+    <p>Puedes probar a:</p>
     <ul>
-        <li>Refreshing the page.</li>
-        <li>Coming back later - the issue might be temporary.</li>
-        <li>Going back to <a href="{{ url_for('home.home') }}">our homepage</a> and trying again.</li>
+        <li>Recargar la página.</li>
+        <li>Volver más tarde: puede ser algo puntual.</li>
+        <li>Volver a <a href="{{ url_for('home.home') }}">la página de inicio</a> e intentarlo otra vez.</li>
     </ul>
-    <p>If the problem persists, please contact the site administrator.</p>
+    <p>Si el problema persiste, revisa los logs del contenedor.</p>
 </div>
 {% endblock %}
