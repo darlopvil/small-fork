@@ -1,16 +1,36 @@
+/* ==========================================================================
+   Paleta (fork: tema oscuro único, sin variante clara)
+   ========================================================================== */
+:root {
+    --bg: #14161a;
+    --surface: #1c1f24;
+    --surface-alt: #16181d;
+    --fg: #e4e6eb;
+    --fg-muted: #9aa0a8;
+    --accent: #6ea8fe;
+    --accent-hover: #8bbcff;
+    --accent-active: #5590e6;
+    --on-accent: #10131a;
+    --border: #2c3138;
+    --border-strong: #3a4048;
+    --pre-marker: #f36d33;
+    --error: #ff6b6b;
+    --shadow: rgba(0, 0, 0, 0.45);
+}
+
 /* General Styles */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
-    color: #333;
+    color: var(--fg);
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--bg);
 }
 
 a {
-    color: #1a73e8;
+    color: var(--accent);
     text-decoration: none;
 }
 
@@ -21,24 +41,24 @@ a:hover {
 a .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #1a73e8;
-    color: #fff;
+    background-color: var(--accent);
+    color: var(--on-accent);
     border-radius: 5px;
     text-align: center;
     margin-top: 20px;
 }
 
 a .btn:hover {
-    background-color: #0d6efd;
+    background-color: var(--accent-hover);
 }
 
 a .btn:active {
-    background-color: #0b5ed7;
+    background-color: var(--accent-active);
 }
 
 /* Header Styles */
 header {
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 20px;
     margin-bottom: 40px;
 }
@@ -60,17 +80,17 @@ header nav a {
 footer {
     margin-top: 40px;
     padding-top: 20px;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--border);
     font-size: 0.9em;
-    color: #666;
+    color: var(--fg-muted);
 }
 
 /* Article Styles */
 article {
-    background-color: #fff;
+    background-color: var(--surface);
     padding: 30px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow);
 }
 
 article h1 {
@@ -79,7 +99,7 @@ article h1 {
 }
 
 article .meta {
-    color: #666;
+    color: var(--fg-muted);
     font-size: 0.9em;
     margin-bottom: 20px;
 }
@@ -92,10 +112,10 @@ article img {
 
 /* Code Block Styles */
 pre {
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
-    border-left: 3px solid #f36d33;
-    color: #666;
+    background-color: var(--surface-alt);
+    border: 1px solid var(--border-strong);
+    border-left: 3px solid var(--pre-marker);
+    color: var(--fg);
     page-break-inside: avoid;
     font-family: monospace;
     font-size: 15px;
@@ -122,31 +142,33 @@ iframe {
 
 .gist h4 {
     margin-bottom: 10px;
-    color: #333;
+    color: var(--fg);
 }
 
 /* Error Page Styles */
 .error-container {
     text-align: center;
     padding: 40px;
-    background-color: #fff;
+    background-color: var(--surface);
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow);
 }
 
 .error-container h1 {
-    color: #d32f2f;
+    color: var(--error);
 }
 
 .error-container ul {
     text-align: left;
     display: inline-block;
 }
+
+/* Preview Notice */
 .preview-notice {
     margin: 2rem 0;
     padding: 1rem 1.25rem;
-    border-left: 4px solid #1a73e8;
-    background-color: #f4f4f4;
+    border-left: 4px solid var(--accent);
+    background-color: var(--surface-alt);
 }
 
 .preview-notice p {
