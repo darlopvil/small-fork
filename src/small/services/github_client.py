@@ -5,7 +5,7 @@ class GithubClient:
     @staticmethod
     def get_gist(gist_id):
         url = f"https://api.github.com/gists/{gist_id}"
-        response = requests.get(url)
+        response = requests.get(url, timeout=15)
         if response.status_code == 200:
             data = response.json()
             files = data["files"]
