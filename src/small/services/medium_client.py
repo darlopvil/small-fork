@@ -47,16 +47,21 @@ class MediumClient:
                 "postMeteringOptions": {},
             },
             "query": """
-                query FullPostQuery($postId: ID!, $postMeteringOptions: PostMeteringOptions) {
+                            query FullPostQuery($postId: ID!, $postMeteringOptions: PostMeteringOptions) {
                   post(id: $postId) {
                     title
                     createdAt
                     firstPublishedAt
                     latestPublishedAt
+                    isLocked
+                    visibility
+                    mediumUrl
                     creator {
                       name
                     }
                     content(postMeteringOptions: $postMeteringOptions) {
+                      isLockedPreviewOnly
+                      validatedShareKey
                       bodyModel {
                         paragraphs {
                           id
@@ -207,11 +212,17 @@ class MediumClient:
             for paragraph in cls._paragraphs(post_data)
         ]
 
+        content = post_data.get("content") or {}
+
         return Page(
             title=post_data.get("title") or "Untitled",
             author=(post_data.get("creator") or {}).get("name") or "Unknown author",
             created_at=cls._timestamp_to_string(post_data),
             content=paragraphs,
+            is_locked=bool(post_data.get("isLocked")),
+            medium_url=post_data.get("mediumUrl") or "",
+            is_preview_only=bool(content.get("isLockedPreviewOnly")),
+            share_key=content.get("validatedShareKey") or "",
         )
 
     @staticmethod

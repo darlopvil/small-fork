@@ -30,4 +30,21 @@
         {% endfor %}
     {% endfor %}
 </article>
+
+{% if page.is_preview_only %}
+<aside class="preview-notice">
+    <p><strong>Vista previa</strong></p>
+    <p>
+        Este artículo es solo para miembros de Medium. Lo que ves arriba son
+        {{ page.content|length }} párrafos de vista previa, no el artículo completo.
+    </p>
+    {% if page.medium_url %}
+    <p><a href="{{ page.medium_url }}" rel="noopener">Ver en Medium</a></p>
+    {% endif %}
+</aside>
+{% elif page.share_key %}
+<aside class="preview-notice">
+    <p>Artículo completo, desbloqueado mediante friend link.</p>
+</aside>
+{% endif %}
 {% endblock %}

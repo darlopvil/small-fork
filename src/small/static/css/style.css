@@ -142,3 +142,13 @@ iframe {
     text-align: left;
     display: inline-block;
 }
+.preview-notice {
+    margin: 2rem 0;
+    padding: 1rem 1.25rem;
+    border-left: 4px solid #1a73e8;
+    background-color: #f4f4f4;
+}
+
+.preview-notice p {
+    margin: 0.4rem 0;
+}

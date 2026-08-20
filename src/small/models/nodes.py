@@ -45,3 +45,7 @@ class Page:
     author: str
     created_at: str
     content: List[Paragraph]
+    is_locked: bool = False
+    medium_url: str = ""
+    is_preview_only: bool = False
+    share_key: str = ""
