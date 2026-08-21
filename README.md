@@ -1,171 +1,80 @@
+<div align="center">
+
+<img src="src/small/static/small.png" alt="Small" width="96">
+
 # Small
 
-[![Support Private.coffee!](https://shields.private.coffee/badge/private.coffee-support%20us!-pink?logo=coffeescript)](https://private.coffee)
-[![Matrix](https://shields.private.coffee/badge/Matrix-join%20us!-blue?logo=matrix)](https://matrix.pcof.fi/#/#small:private.coffee)
-[![Latest Git Commit](https://shields.private.coffee/gitea/last-commit/privatecoffee/small?gitea_url=https://git.private.coffee)](https://git.private.coffee/privatecoffee/small)
+**Frontend alternativo para artículos de Medium**
 
-Small is an alternative frontend for Medium articles, built with Flask. It allows users to read Medium articles without the clutter and distractions of the original Medium interface.
+Fork de [PrivateCoffee/small](https://git.private.coffee/PrivateCoffee/small) con modificaciones propias.
 
-## Instances
+</div>
 
-<!-- START_INSTANCE_LIST -->
-| URL                                                  | Provided by                              | Country       | Notes         |
-| ---------------------------------------------------- | ---------------------------------------- | ------------- | ------------- |
-| [small.private.coffee](https://small.private.coffee) | [Private.coffee](https://private.coffee) | Austria 🇦🇹 🇪🇺 | Main instance |
-| [small.bloat.cat](https://small.bloat.cat)           | [Bloat.cat](https://bloat.cat)           | Germany 🇩🇪 🇪🇺 |               |
-<!-- END_INSTANCE_LIST -->
+---
 
-## Features
+## Qué es esto
 
-- Clean, minimalist interface for reading Medium articles
-- Fetches article content directly from Medium's GraphQL API
-- Parses and displays article content, including text and basic formatting
-- Proxies embedded images and GitHub gists
-- Prevents loading iframes without user consent
-- Responsive design for comfortable reading on various devices
+Small es un frontend alternativo para Medium escrito en Flask. Permite leer artículos sin la interfaz de Medium, sin JavaScript de terceros y sin telemetría: el servidor pide el contenido a la API GraphQL de Medium y devuelve HTML plano.
 
-## Installation
+Este repositorio es un **fork personal**. El proyecto original es de [Private.coffee](https://private.coffee) y está bajo licencia MIT. Si buscas la versión oficial, ve al repositorio de arriba; aquí solo hay una instancia con cambios adaptados a mi servidor.
 
-1. Clone the repository:
+## Diferencias respecto al upstream
 
-   ```
-   git clone https://git.private.coffee/PrivateCoffee/small.git
-   cd small
-   ```
+### Aviso de vista previa en artículos de pago
 
-2. Create a virtual environment and activate it:
+Upstream pide `content(postMeteringOptions: {})` de forma anónima. En los artículos *member-only* Medium devuelve una vista previa truncada, y Small la renderizaba como si fuera el artículo completo: sin aviso, sin marca, sin nada. El lector no podía distinguir un artículo corto de uno cortado a la mitad.
 
-   ```
-   python -m venv venv
-   source venv/bin/activate
-   ```
+Este fork añade al query los campos `isLocked`, `visibility`, `mediumUrl` y, dentro de `content`, `isLockedPreviewOnly` y `validatedShareKey`. Cuando el contenido está truncado se muestra un aviso al final indicando cuántos párrafos son vista previa, con enlace al original en Medium.
 
-3. Install the package:
-   ```
-   pip install .
-   ```
+El aviso dice **vista previa**, nunca *"has agotado tu cuota"*: desde el servidor la respuesta es idéntica cuando se acaba la cuota mensual y cuando nunca hubo acceso, así que afirmar lo segundo sería inventar.
 
-## Usage
+> Los nombres de esos campos se obtuvieron sondeando los mensajes de error del validador GraphQL. La introspección está bloqueada en el endpoint de Medium, tanto `__schema` como `__type`.
 
-### Local / Development
+### Timeouts en las peticiones salientes
 
-1. Start the Flask development server:
+`MediumClient` ya pasaba `timeout=30`, pero el proxy de imágenes y `GithubClient` no llevaban ninguno. Sin timeout, `requests` bloquea indefinidamente y una conexión colgada inmoviliza un worker de uWSGI hasta el reinicio. Un artículo con veinte imágenes puede ocupar varios workers a la vez.
 
-   ```
-   small
-   ```
+### Tema oscuro único
 
-2. Open your web browser and navigate to `http://localhost:5000`
+`style.css` no tenía ninguna custom property: 143 líneas con todos los colores escritos a mano. Se ha introducido la capa de variables (`:root`) y sustituido todos los literales por una paleta oscura. Sin variante clara y sin `prefers-color-scheme`, por coherencia con el resto de servicios de la instancia.
 
-3. To read a Medium article, replace `https://medium.com` in the article's URL with `http://localhost:5000`
+Dos cambios no son sustitución directa: los bloques `pre` tenían `#666` sobre `#f4f4f4`, con mal contraste ya en claro e ilegible en oscuro; y el acento `#1a73e8` no daba contraste suficiente sobre fondo oscuro, así que sube a `#6ea8fe`.
 
-   For example:
+### Interfaz en español
 
-   - Original URL: `https://medium.com/@username/article-title-123abc`
-   - Small URL: `http://localhost:5000/@username/article-title-123abc`
+Página de inicio, errores 404 y 500 traducidos, `lang="es"`, y footer que mantiene el crédito a Private.coffee añadiendo el enlace a este fork.
 
-### Production
+### Favicon
 
-For production use, it is recommended to deploy Small using a WSGI server like uWSGI, and behind a reverse proxy like Caddy.
+Upstream no declara ninguno, y cada carga generaba un `404` de `/favicon.ico`.
 
-#### Podman / Container
+## Uso
 
-Small provides a container image at `git.private.coffee/privatecoffee/small:latest`.
+Sustituir `https://medium.com/` por la URL de la instancia en cualquier artículo:
 
-```
-podman run --rm -p 8002:8002 -e PORT=8002 git.private.coffee/privatecoffee/small:latest
-```
+- Original: `https://medium.com/@usuario/titulo-123abc`
+- Small: `https://small.ejemplo.com/@usuario/titulo-123abc`
 
-#### Manual Deployment
+## Notas técnicas
 
-This is a basic guide to deploy Small using uWSGI and Caddy. Adjust the steps as needed for your specific environment and requirements.
+Cosas que costaron tiempo y conviene no volver a descubrir:
 
-1. Clone the repository:
+- **Hay dos clases `Page` en el proyecto.** La que usa `MediumClient` viene de `models/nodes.py`; la de `models/page.py` no la importa nadie. Editar la equivocada produce un `Page.__init__() got an unexpected keyword argument` en tiempo de ejecución mientras el fichero en disco parece correcto.
+- **La introspección GraphQL está bloqueada** en `medium.com/_/graphql`, tanto `__schema` como `__type`. Para descubrir campos, enviar el candidato y leer el mensaje de error: el validador suele sugerir el nombre correcto.
+- **`PostMeteringOptions` acepta `referrer` y `sk`.** `shareKey` no existe.
+- **Werkzeug separa la query string antes del enrutado**, así que el token `sk` de un friend link nunca llega a `parse_article_id`: queda en `request.args`.
+- **El paquete se importa desde `site-packages`**, no desde `/app/src`. El `Containerfile` hace `pip install .`, así que verificar cambios con `grep` sobre `/app` puede llevar a conclusiones falsas.
+- **`templates/iframe.html` es un fragmento suelto**, sin `<html>` ni enlace al CSS. No hereda de `base.html` y por tanto no recibe los estilos.
 
-   ```
-   git clone https://git.private.coffee/PrivateCoffee/small.git
-   cd small
-   ```
+## Licencia
 
-2. Create a virtual environment and activate it:
+MIT, igual que el proyecto original. Ver [LICENSE](LICENSE).
 
-   ```
-   python -m venv venv
-   source venv/bin/activate
-   ```
+## Créditos
 
-3. Install the package:
+- [Private.coffee](https://private.coffee) por [Small](https://git.private.coffee/PrivateCoffee/small), el proyecto original.
+- Inspirado a su vez en [Scribe](https://git.sr.ht/~edwardloveall/scribe).
 
-   ```
-   pip install .
-   ```
+## Aviso
 
-4. Install uWSGI:
-
-   ```
-   pip install uwsgi
-   ```
-
-5. Create a `small.ini` file with the following content (adjust as needed):
-
-   ```
-   [uwsgi]
-   module = small.app:app
-
-   uid = small
-   gid = small
-   master = true
-   processes = 5
-
-   virtualenv = /srv/small/venv/
-   chdir = /srv/small/
-
-   http-socket = /tmp/small.sock
-   chown-socket = caddy
-   ```
-
-6. Start the uWSGI server (consider using a process manager like `systemd`):
-
-   ```
-   uwsgi --ini small.ini
-   ```
-
-7. Configure Caddy to reverse proxy requests to the uWSGI server:
-   ```
-   small.example.com {
-       reverse_proxy unix//tmp/small.sock
-   }
-   ```
-
-#### Proxy Fix
-
-If you are using a reverse proxy like Nginx, and it is setting the `X-Forwarded-Host` header instead of passing the `Host` header (you will notice this if the URL displayed on the landing page shows the internal IP and port instead of the domain name), you can use the `ProxyFix` middleware to fix the issue. To enable it, simply set the `PROXY_FIX` environment variable to `1`.
-
-For uWSGI, you can add the following line to the `small.ini` file:
-
-```
-env = PROXY_FIX=1
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Inspired by the [Scribe](https://git.sr.ht/~edwardloveall/scribe) project built with Crystal and Lucky
-- Thanks to Medium for providing the content through their API
-
-## Disclaimer
-
-This project is not affiliated with, endorsed, or sponsored by Medium. It's an independent project created to provide an alternative reading experience for Medium content.
+Proyecto sin relación alguna con Medium, ni respaldado ni patrocinado por ellos.
